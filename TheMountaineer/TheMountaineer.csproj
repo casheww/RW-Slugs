@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClimberCharacter.cs" />
+    <Compile Include="Hooks.cs" />
     <Compile Include="MountaineerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

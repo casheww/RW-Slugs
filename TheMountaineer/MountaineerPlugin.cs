@@ -1,5 +1,5 @@
-﻿using BepInEx;
-using SlugBase;
+﻿using System.Collections.Generic;
+using BepInEx;
 
 namespace TheMountaineer
 {
@@ -8,8 +8,13 @@ namespace TheMountaineer
     {
         public MountaineerPlugin()
         {
-            PlayerManager.RegisterCharacter(new ClimberCharacter(Info.Metadata.Name));
+            SlugBase.SlugBaseCharacter character = new ClimberCharacter(Info.Metadata.Name);
+            SlugBase.PlayerManager.RegisterCharacter(character);
+            CharacterInstance = character;
+
+            Hooks.Apply();
         }
 
+        public static SlugBase.SlugBaseCharacter CharacterInstance { get; private set; }
     }
 }
