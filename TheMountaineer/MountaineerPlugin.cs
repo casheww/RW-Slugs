@@ -8,7 +8,7 @@ namespace TheMountaineer
     {
         public MountaineerPlugin()
         {
-            SlugBase.SlugBaseCharacter character = new ClimberCharacter(Info.Metadata.Name);
+            SlugBase.SlugBaseCharacter character = new MountaineerCharacter(Info.Metadata.Name);
             SlugBase.PlayerManager.RegisterCharacter(character);
             CharacterInstance = character;
 

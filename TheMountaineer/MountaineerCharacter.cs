@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace TheMountaineer
 {
-    public class ClimberCharacter : SlugBaseCharacter
+    public class MountaineerCharacter : SlugBaseCharacter
     {
-        public ClimberCharacter(string slugName) : base(slugName, FormatVersion.V1, 0)
+        public MountaineerCharacter(string slugName) : base(slugName, FormatVersion.V1, 0)
         {
         }
 
