@@ -62,7 +62,7 @@ namespace TheMountaineer
 
                 hand.FindGrip(graphics.owner.room, hand.pos, hand.pos, 90f, goalPos, 0, 0, true);
             }
-		}
+        }
 
         SlugcatHand movingHand = null;
         int movingHandUpdateCount;
