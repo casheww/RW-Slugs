@@ -12,8 +12,8 @@ namespace TheMountaineer
         public override string Description => 
             "While struggling in the dazzling light of day, this creature is a hardy climber and caver.";
 
-        protected override void Disable() { }
-        protected override void Enable() { }
+        protected override void Enable() { Hooks.Apply(); }
+        protected override void Disable() { Hooks.UnApply(); }
 
         public override bool CanEatMeat(Player player, Creature creature) => true;
 

@@ -11,6 +11,13 @@ namespace TheMountaineer
             On.Player.Update += PlayerWallClimb;
         }
 
+        public static void UnApply()
+        {
+            On.StoryGameSession.ctor -= StoryGameSession_ctor;
+            On.Creature.SpitOutOfShortCut -= Creature_SpitOutOfShortCut;
+            On.Player.Update -= PlayerWallClimb;
+        }
+
         static void StoryGameSession_ctor(On.StoryGameSession.orig_ctor orig, StoryGameSession self,
                 int saveStateNumber, RainWorldGame game)
         {

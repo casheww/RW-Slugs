@@ -13,8 +13,6 @@ namespace TheMountaineer
             SlugBase.SlugBaseCharacter character = new MountaineerCharacter(Info.Metadata.Name);
             SlugBase.PlayerManager.RegisterCharacter(character);
             CharacterInstance = character;
-
-            Hooks.Apply();
         }
 
         public static SlugBase.SlugBaseCharacter CharacterInstance { get; private set; }
