@@ -1,5 +1,4 @@
-﻿using System;
-using SlugBase;
+﻿using SlugBase;
 using UnityEngine;
 
 namespace TheMountaineer

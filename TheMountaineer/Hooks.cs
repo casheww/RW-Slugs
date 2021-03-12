@@ -11,8 +11,21 @@ namespace TheMountaineer
             On.Player.Update += PlayerWallClimb;
         }
 
-        private static void Creature_SpitOutOfShortCut(On.Creature.orig_SpitOutOfShortCut orig, Creature self,
-                RWCustom.IntVector2 pos, Room newRoom, bool spitOutAllSticks)
+        static void StoryGameSession_ctor(On.StoryGameSession.orig_ctor orig, StoryGameSession self,
+                int saveStateNumber, RainWorldGame game)
+        {
+            orig(self, saveStateNumber, game);
+
+            if (SlugBase.PlayerManager.CurrentCharacter == MountaineerPlugin.CharacterInstance)
+            {
+                self.characterStats.poleClimbSpeedFac = 1.25f;
+                self.characterStats.corridorClimbSpeedFac = 1.4f;
+                self.characterStats.loudnessFac = 1.5f;
+            }
+        }
+
+        static void Creature_SpitOutOfShortCut(On.Creature.orig_SpitOutOfShortCut orig, Creature self,
+        RWCustom.IntVector2 pos, Room newRoom, bool spitOutAllSticks)
         {
             orig(self, pos, newRoom, spitOutAllSticks);
 
@@ -24,25 +37,13 @@ namespace TheMountaineer
             {
                 if (player.playerState.slugcatCharacter == MountaineerPlugin.CharacterInstance.SlugcatIndex)
                 {
+                    Debug.Log("mountaineer bonus speed");
                     player.slugcatStats.runspeedFac = 1.6f;
                 }
             }
             else
             {
                 player.slugcatStats.runspeedFac = 1f;
-            }
-        }
-
-        static void StoryGameSession_ctor(On.StoryGameSession.orig_ctor orig, StoryGameSession self,
-                int saveStateNumber, RainWorldGame game)
-        {
-            orig(self, saveStateNumber, game);
-
-            if (SlugBase.PlayerManager.CurrentCharacter == MountaineerPlugin.CharacterInstance)
-            {
-                self.characterStats.poleClimbSpeedFac = 1.25f;
-                self.characterStats.corridorClimbSpeedFac = 1.4f;
-                self.characterStats.loudnessFac = 1.5f;
             }
         }
 
@@ -62,16 +63,23 @@ namespace TheMountaineer
                         break;
 
                     case -1:
-                        climbVel = new Vector2(0, -3f);
+                        climbVel = new Vector2(0, -9f);
                         break;
 
                     case 0:
                     default:
-                        climbVel = Vector2.zero;
+                        climbVel = new Vector2(0, 0.9f);      // upwards velocity to counteract gravity
                         break;
                 }
 
-                self.mainBodyChunk.vel = climbVel;
+                climbVel.x = input.x;
+
+                foreach (BodyChunk bc in self.bodyChunks)
+                {
+                    bc.vel = climbVel;
+                }
+
+                Climber.ManageClimb(self, input.x, input.y);
             }
         }
 

@@ -8,6 +8,8 @@ namespace TheMountaineer
     {
         public MountaineerPlugin()
         {
+            Climbers = new Dictionary<Player, Climber>();
+
             SlugBase.SlugBaseCharacter character = new MountaineerCharacter(Info.Metadata.Name);
             SlugBase.PlayerManager.RegisterCharacter(character);
             CharacterInstance = character;
@@ -16,5 +18,6 @@ namespace TheMountaineer
         }
 
         public static SlugBase.SlugBaseCharacter CharacterInstance { get; private set; }
+        public static Dictionary<Player, Climber> Climbers { get; set; }
     }
 }
