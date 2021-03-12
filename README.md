@@ -9,6 +9,8 @@ I currently plan to release each slugcat as a seperate mod so users can pick and
 ## The Mountaineer
 *While struggling in the dazzling light of day, this creature is a hardy climber and caver.*
 
+![mountaineer climbing](TheMountaineer/climb.png)
+
 #### Stats
 - Food to hibernate: 4
 - Max food: 9
