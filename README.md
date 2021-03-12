@@ -4,6 +4,10 @@ An unplanned set of BepInEx plugins for Rain World, each adding a new character 
 I currently plan to release each slugcat as a seperate mod so users can pick and choose... That's assuming I manage to think of ideas for more.
 <br><br>
 
+### Installation
+Grab the DLL from [here](https://github.com/casheww/RW-Slugs/releases/latest) and install as you would any Rain World BepInEx plugin.
+Requires [SlugBase](https://github.com/SlimeCubed/SlugBase/releases/latest)!
+
 ---
 
 ## The Mountaineer
