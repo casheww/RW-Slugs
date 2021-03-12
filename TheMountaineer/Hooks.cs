@@ -33,7 +33,7 @@ namespace TheMountaineer
 
             float darkness = newRoom.Darkness(newRoom.MiddleOfTile(self.abstractCreature.pos.Tile));
             Debug.Log($"darkness: {darkness}");
-            if (darkness > 0.5f)
+            if (darkness > 0.7f)
             {
                 if (player.playerState.slugcatCharacter == MountaineerPlugin.CharacterInstance.SlugcatIndex)
                 {

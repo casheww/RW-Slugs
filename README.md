@@ -1,5 +1,5 @@
 # RW-Slugs
-WIP BepInEx plugin for Rain World that adds a selection of slugcats based on [Slime_Cubed's SlugBase](https://github.com/SlimeCubed/SlugBase).
+An unplanned set of BepInEx plugins for Rain World, each adding a new character based on [Slime_Cubed's SlugBase](https://github.com/SlimeCubed/SlugBase).
 
 I currently plan to release each slugcat as a seperate mod so users can pick and choose... That's assuming I manage to think of ideas for more.
 <br><br>
