@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{65D563C8-5838-4AAB-8991-A0D0A63520D1}</ProjectGuid>
+    <ProjectGuid>{55E60856-9CC5-4219-A853-F4726521C30B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TheMountaineer</RootNamespace>
-    <AssemblyName>TheMountaineer</AssemblyName>
+    <RootNamespace>TheRonin</RootNamespace>
+    <AssemblyName>TheRonin</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -35,13 +35,13 @@
       <HintPath>..\..\safe\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\Games\Steam\steamapps\common\Rain World\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>..\..\safe\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="HOOKS-Assembly-CSharp">
       <HintPath>..\..\safe\HOOKS-Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="SlugBase">
-      <HintPath>..\..\..\..\Games\Steam\steamapps\common\Rain World\Mods\SlugBase.dll</HintPath>
+      <HintPath>..\..\safe\SlugBase.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,10 +54,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClimbingModule.cs" />
-    <Compile Include="MountaineerCharacter.cs" />
+    <Compile Include="FocusMeter.cs" />
+    <Compile Include="FocusModule.cs" />
     <Compile Include="Hooks.cs" />
-    <Compile Include="MountaineerPlugin.cs" />
+    <Compile Include="RoninCharacter.cs" />
+    <Compile Include="RoninPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,9 +2,9 @@
 
 namespace TheMountaineer
 {
-    class Climber
+    class ClimbingModule
     {
-        public Climber(PlayerGraphics graphics)
+        public ClimbingModule(PlayerGraphics graphics)
         {
             this.graphics = graphics;
         }
@@ -15,7 +15,7 @@ namespace TheMountaineer
         {
             if (!MountaineerPlugin.Climbers.ContainsKey(player))
             {
-                MountaineerPlugin.Climbers.Add(player, new Climber(player.graphicsModule as PlayerGraphics));
+                MountaineerPlugin.Climbers.Add(player, new ClimbingModule(player.graphicsModule as PlayerGraphics));
             }
 
             if (y == 0) return;

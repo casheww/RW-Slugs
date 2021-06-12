@@ -86,7 +86,7 @@ namespace TheMountaineer
                     bc.vel = climbVel;
                 }
 
-                Climber.ManageClimb(self, input.x, input.y);
+                ClimbingModule.ManageClimb(self, input.x, input.y);
             }
         }
 
