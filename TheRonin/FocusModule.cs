@@ -7,6 +7,8 @@ namespace TheRonin
         public FocusModule()
         {
             Focus = 1;
+            frames = 0;
+            focusState = FocusState.Unfocused;
         }
 
         public float Focus
@@ -24,7 +26,10 @@ namespace TheRonin
             }
             else
             {
-                Focus += -0.025f * Mathf.Pow(player.aerobicLevel, 2) + 0.0003125f;
+                frames = 0;
+                focusState = FocusState.Unfocused;
+
+                Focus += -focusLossCoef * Mathf.Pow(player.aerobicLevel, 2) + passiveFocusRegen;
             }
         }
 
@@ -34,35 +39,39 @@ namespace TheRonin
             {
                 case FocusState.Unfocused:
                     focusState = FocusState.Readying;
-                    origRoomFades = player.room.roomSettings.fadePalette.fades;
                     break;
 
                 case FocusState.Readying:
                     if (frames >= readyingFrames)
                     {
-                        focusState = FocusState.Focusing;
                         frames = 0;
+                        focusState = FocusState.Focusing;
                     }
-                    FocusFade(player);
+                    FocusFade(player, (float)frames / readyingFrames);
                     break;
 
                 case FocusState.Focusing:
                     if (frames >= focusingFrames)
                     {
-                        focusState = FocusState.Unfocused;
                         frames = 0;
-                        player.room.roomSettings.fadePalette.fades = origRoomFades;
+                        focusState = FocusState.Unfocused;
                     }
                     
+                    // increase focus
                     Focus += activeFocusChargePerFrame;
+
+                    // steady breathing
+                    player.AerobicIncrease(-0.1f);
+                    // prevent player from 'unbreathing' which seriously messes up some playergraphics position stuff
+                    player.aerobicLevel = Mathf.Clamp01(player.aerobicLevel);
                     break;
             }
 
             frames++;
         }
 
-        static int frames = 0;
-        static FocusState focusState = FocusState.Unfocused;
+        static int frames;
+        static FocusState focusState;
 
         enum FocusState
         {
@@ -75,16 +84,29 @@ namespace TheRonin
         const int focusingFrames = 80;
 
         const float activeFocusChargePerFrame = 0.05f;
+        const float focusLossCoef = 0.025f;
+        const float passiveFocusRegen = 0.0003125f;
 
-        void FocusFade(Player player)
+
+        void FocusFade(Player player, float alpha)
         {
-            RoomSettings.FadePalette fadePalette = player.room.roomSettings.fadePalette;
-            for (int i = 0; i < fadePalette.fades.Length; i++)
+            if (effect == null)
             {
-                fadePalette.fades[i] = Mathf.Lerp(fadePalette.fades[i], 0, (float)frames / readyingFrames);
+                // first call
+                effect = new FocusFadeEffect(player);
+                player.room.AddObject(effect);
             }
+            else if (effect.room != player.room)
+            {
+                // player has changed room
+                effect.RemoveFromRoom();
+                player.room.AddObject(effect);
+            }
+
+            effect.Alpha = alpha;
         }
-        float[] origRoomFades;
+
+        FocusFadeEffect effect = null;
 
     }
 }
