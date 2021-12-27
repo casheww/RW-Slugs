@@ -25,7 +25,14 @@ namespace TheRonin
             if (!(SlugBase.PlayerManager.UsingCustomCharacter
                 && SlugBase.PlayerManager.CurrentCharacter is RoninCharacter ronin)) return;
 
-            ronin.FocusModule.Update(self, Input.GetKey(KeyCode.Backslash));
+            // add player to focus module dict if not already present
+            if (!RoninCharacter.PlayerFocusModules.TryGetValue(self, out FocusModule fm))
+            {
+                fm = new FocusModule();
+                RoninCharacter.PlayerFocusModules[self] = fm;
+            }
+
+            fm.Update(self, Input.GetKey(KeyCode.Backslash));
         }
 
         private static void HUD_InitSinglePlayerHud(On.HUD.HUD.orig_InitSinglePlayerHud orig, HUD.HUD self, RoomCamera cam)

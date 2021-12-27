@@ -1,4 +1,5 @@
 ﻿using SlugBase;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TheRonin
@@ -7,7 +8,7 @@ namespace TheRonin
     {
         public RoninCharacter() : base("The Ronin", FormatVersion.V1, 2)
         {
-            FocusModule = new FocusModule();
+            PlayerFocusModules = new Dictionary<Player, FocusModule>();
         }
 
         public override string Description => "Well-versed in combat, the Ronin is agile and can rival foes many times its size.";
@@ -17,6 +18,8 @@ namespace TheRonin
 
         protected override void GetStats(SlugcatStats stats)
         {
+            stats.
+
             stats.bodyWeightFac = 1.1f;
             stats.loudnessFac = 1.1f;
 
@@ -30,16 +33,16 @@ namespace TheRonin
                 return;
             }
 
-            stats.corridorClimbSpeedFac = Mathf.Lerp(1, 1.3f, FocusModule.Focus);
-            stats.lungsFac = Mathf.Lerp(1, 1.4f, FocusModule.Focus);
-            stats.runspeedFac = Mathf.Lerp(1, 1.2f, FocusModule.Focus);
+            stats.corridorClimbSpeedFac = Mathf.Lerp(0.9f, 1.3f, FocusModule.Focus);
+            stats.lungsFac = Mathf.Lerp(1, 1.8f, FocusModule.Focus);
+            stats.runspeedFac = Mathf.Lerp(0.9f, 1.2f, FocusModule.Focus);
             stats.throwingSkill = FocusModule.Focus > 0.75f ? 2 : 1;
         }
 
         public override Color? SlugcatColor() => new Color(0.64f, 0.64f, 0.58f);
 
 
-        public FocusModule FocusModule { get; private set; }
+        public static Dictionary<Player, FocusModule> PlayerFocusModules { get; private set; }
 
     }
 }

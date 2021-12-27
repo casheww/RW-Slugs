@@ -37,6 +37,9 @@
     <Reference Include="BepInEx">
       <HintPath>..\..\safe\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="ConfigMachine">
+      <HintPath>..\..\..\..\Games\Steam\steamapps\common\Rain World\Mods\ConfigMachine.dll</HintPath>
+    </Reference>
     <Reference Include="HOOKS-Assembly-CSharp">
       <HintPath>..\..\safe\HOOKS-Assembly-CSharp.dll</HintPath>
     </Reference>

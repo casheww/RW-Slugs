@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace TheRonin
 {
@@ -8,7 +9,17 @@ namespace TheRonin
         {
             Focus = 1;
             frames = 0;
+            unfadeFrames = 0;
+
             focusState = FocusState.Unfocused;
+
+            stateFrames = new Dictionary<FocusState, int>()
+            {
+                { FocusState.Unfocused, 20 },
+                { FocusState.Readying, 160 },
+                { FocusState.Focused, 60 },
+                { FocusState.Cooldown, 80 }
+            };
         }
 
         public float Focus
@@ -20,14 +31,22 @@ namespace TheRonin
 
         public void Update(Player player, bool focusKeyPressed)
         {
-            if (focusKeyPressed && player.touchedNoInputCounter > 10)
+            if (focusKeyPressed && player.touchedNoInputCounter > 10 && !UnfadeInProgress)
             {
+                unfadeFrames = 0;
+
                 DoFocus(player);
+                frames++;
             }
             else
             {
                 frames = 0;
-                focusState = FocusState.Unfocused;
+
+                FocusUnfade(player);
+                unfadeFrames++;
+
+                // switch to cooldown mode if in focus mode to prevent abuse by not using 100% of the focus time
+                focusState = focusState == FocusState.Focused ? FocusState.Cooldown : FocusState.Unfocused;
 
                 Focus += -focusLossCoef * Mathf.Pow(player.aerobicLevel, 2) + passiveFocusRegen;
             }
@@ -35,28 +54,17 @@ namespace TheRonin
 
         void DoFocus(Player player)
         {
-            switch (focusState)
+            int fMax = stateFrames[focusState];
+
+            if (frames < fMax)
             {
-                case FocusState.Unfocused:
-                    focusState = FocusState.Readying;
-                    break;
+                if (focusState == FocusState.Readying)
+                {
+                    FocusFade(player, (float)frames / fMax);
+                }
 
-                case FocusState.Readying:
-                    if (frames >= readyingFrames)
-                    {
-                        frames = 0;
-                        focusState = FocusState.Focusing;
-                    }
-                    FocusFade(player, (float)frames / readyingFrames);
-                    break;
-
-                case FocusState.Focusing:
-                    if (frames >= focusingFrames)
-                    {
-                        frames = 0;
-                        focusState = FocusState.Unfocused;
-                    }
-                    
+                else if (focusState == FocusState.Focused)
+                {
                     // increase focus
                     Focus += activeFocusChargePerFrame;
 
@@ -64,10 +72,19 @@ namespace TheRonin
                     player.AerobicIncrease(-0.1f);
                     // prevent player from 'unbreathing' which seriously messes up some playergraphics position stuff
                     player.aerobicLevel = Mathf.Clamp01(player.aerobicLevel);
-                    break;
-            }
+                }
 
-            frames++;
+                else if (focusState == FocusState.Cooldown)
+                {
+                    FocusUnfade(player);
+                }
+            }
+            else
+            {
+                frames = 0;
+                focusState++;
+                if (focusState > FocusState.Cooldown) focusState = FocusState.Unfocused;
+            }
         }
 
         static int frames;
@@ -77,15 +94,15 @@ namespace TheRonin
         {
             Unfocused,
             Readying,
-            Focusing,
+            Focused,
+            Cooldown
         }
 
-        const int readyingFrames = 40;
-        const int focusingFrames = 80;
+        readonly Dictionary<FocusState, int> stateFrames;
 
-        const float activeFocusChargePerFrame = 0.05f;
-        const float focusLossCoef = 0.025f;
-        const float passiveFocusRegen = 0.0003125f;
+        const float activeFocusChargePerFrame = 0.01f;
+        const float focusLossCoef = 0.02f;
+        const float passiveFocusRegen = 0.0001f;
 
 
         void FocusFade(Player player, float alpha)
@@ -105,6 +122,21 @@ namespace TheRonin
 
             effect.Alpha = alpha;
         }
+
+        void FocusUnfade(Player player)
+        {
+            if (effect == null || effect.Alpha == 0) return;
+
+            if (unfadeFrames == 0) unfadeAlphaStart = effect.Alpha;
+
+            FocusFade(player, Mathf.Lerp(unfadeAlphaStart, 0, (float)unfadeFrames / unfadeFrameMax));
+        }
+
+        int unfadeFrames;
+        const int unfadeFrameMax = 80;
+        float unfadeAlphaStart;
+
+        bool UnfadeInProgress => 0 < unfadeFrames && unfadeFrames < unfadeFrameMax;
 
         FocusFadeEffect effect = null;
 

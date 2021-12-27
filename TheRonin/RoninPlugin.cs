@@ -1,4 +1,6 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
+using UnityEngine;
 
 namespace TheRonin
 {
@@ -14,6 +16,19 @@ namespace TheRonin
         }
 
         public static BepInEx.Logging.ManualLogSource _Logger { get; private set; }
+
+
+        void Awake()
+        {
+            KeyCodes = new ConfigEntry<KeyCode>[4];
+
+            for (int i = 0; i < KeyCodes.Length; i++)
+            {
+                KeyCodes[i] = Config.Bind("Keybinds", $"player focus {i}", KeyCode.Backslash);
+            }
+        }
+
+        public static ConfigEntry<KeyCode>[] KeyCodes { get; private set; }
 
     }
 }
