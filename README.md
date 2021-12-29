@@ -25,5 +25,6 @@ Requires [SlugBase](https://github.com/SlimeCubed/SlugBase/releases/latest)!
 Other stats are inherited from Survivor.
 
 
-#### Abilities
+#### Abilities & Traits
 - Can climb walls (hold grab button and move up/down)
+- Resistance to high speed collisions and falls
