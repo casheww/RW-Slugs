@@ -31,17 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\safe\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\Games\Steam\steamapps\common\Rain World\BepInEx\core\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.17.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="HOOKS-Assembly-CSharp">
-      <HintPath>..\..\safe\HOOKS-Assembly-CSharp.dll</HintPath>
+    <Reference Include="HOOKS-Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\HOOKS-Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SlugBase">
-      <HintPath>..\..\..\..\Games\Steam\steamapps\common\Rain World\Mods\SlugBase.dll</HintPath>
+    <Reference Include="SlugBase, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\SlugBase.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,14 +49,13 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\safe\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClimbingModule.cs" />
     <Compile Include="MountaineerCharacter.cs" />
-    <Compile Include="Hooks.cs" />
     <Compile Include="MountaineerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
