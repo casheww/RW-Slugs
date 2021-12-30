@@ -37,6 +37,12 @@
     <Reference Include="BepInEx, Version=5.4.17.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\references\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="ConfigMachine, Version=1.5.4.4, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\ConfigMachine.dll</HintPath>
+    </Reference>
+    <Reference Include="EnumExtender, Version=0.8.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\references\EnumExtender.dll</HintPath>
+    </Reference>
     <Reference Include="HOOKS-Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\references\HOOKS-Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -55,12 +61,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClimbingModule.cs" />
+    <Compile Include="Equipment\HardhatProperties.cs" />
+    <Compile Include="Fisobs\EntitySaveData.cs" />
+    <Compile Include="Fisobs\Fisob.cs" />
+    <Compile Include="Fisobs\FisobExtensions.cs" />
+    <Compile Include="Fisobs\FisobProperties.cs" />
+    <Compile Include="Fisobs\FisobRegistry.cs" />
+    <Compile Include="Fisobs\SandboxState.cs" />
+    <Compile Include="Equipment\Hardhat.cs" />
+    <Compile Include="Equipment\HardhatAbstract.cs" />
+    <Compile Include="Equipment\HardhatFisob.cs" />
+    <Compile Include="HatModule.cs" />
     <Compile Include="MountaineerCharacter.cs" />
     <Compile Include="MountaineerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetPath) "D:\Games\Steam\steamapps\common\Rain World\Mods"</PostBuildEvent>
+    <PostBuildEvent>copy /Y $(TargetPath) "D:\Games\Steam\steamapps\common\Rain World\BepInEx\plugins"</PostBuildEvent>
   </PropertyGroup>
 </Project>

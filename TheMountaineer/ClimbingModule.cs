@@ -2,14 +2,45 @@
 
 namespace TheMountaineer
 {
-    class ClimbingModule
+    public class ClimbingModule
     {
-        public ClimbingModule(PlayerGraphics graphics)
+        public ClimbingModule(Player player)
         {
-            _graphics = graphics;
+            this.player = player;
+            _graphics = player.graphicsModule as PlayerGraphics;
+        }
+        
+        public void Climb()
+        {
+            Player.InputPackage input = player.input[0];
+            Vector2 climbVel;
+
+            switch (input.y)
+            {
+                case 1:
+                    climbVel = new Vector2(0, 3f);
+                    break;
+
+                case -1:
+                    climbVel = new Vector2(0, -4f);
+                    break;
+
+                default:
+                    climbVel = new Vector2(0, 0.9f);        // upwards velocity to counteract gravity
+                    break;
+            }
+            
+
+            climbVel.x = input.x;
+
+            foreach (BodyChunk bc in player.bodyChunks)
+                bc.vel = climbVel;
+
+            PlayAnimation(input.x, input.y);
+            afterClimbingCounter = 40;
         }
 
-        public void PlayAnimation(int x, int y)
+        private void PlayAnimation(int x, int y)
         {
             foreach (SlugcatHand hand in _graphics.hands)
             {                
@@ -50,6 +81,8 @@ namespace TheMountaineer
             }
         }
 
+        public readonly Player player;
+        public int afterClimbingCounter;
         private readonly PlayerGraphics _graphics;
         private SlugcatHand _movingHand;
         private int _movingHandUpdateCount;

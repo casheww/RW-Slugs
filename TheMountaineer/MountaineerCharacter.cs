@@ -1,12 +1,18 @@
-﻿using RWCustom;
+﻿using System.Collections.Generic;
+using RWCustom;
 using SlugBase;
+using TheMountaineer.Equipment;
 using UnityEngine;
 
 namespace TheMountaineer
 {
     public class MountaineerCharacter : SlugBaseCharacter
     {
-        public MountaineerCharacter(string slugName) : base(slugName, FormatVersion.V1, 0, true) {}
+        public MountaineerCharacter(string slugName) : base(slugName, FormatVersion.V1, 0, true)
+        {
+            _climbingModules = new List<ClimbingModule>();
+            _hatModules = new List<HatModule>();
+        }
 
         
         #region SlugBase
@@ -54,43 +60,40 @@ namespace TheMountaineer
         {
             orig(self, eu);
             if (!IsMe(self)) return;
-            
-            if (_climbingModule is null)
-                _climbingModule = new ClimbingModule(self.graphicsModule as PlayerGraphics);
 
-            if (self.input[0].pckp && self.bodyMode == Player.BodyModeIndex.WallClimb)
+            if (Input.GetKeyDown(KeyCode.T))
             {
-                Player.InputPackage input = self.input[0];
-                Vector2 climbVel;
-
-                switch (input.y)
-                {
-                    case 1:
-                        climbVel = new Vector2(0, 3f);
-                        break;
-
-                    case -1:
-                        climbVel = new Vector2(0, -9f);         // I have no idea why this is still so slow
-                        break;
-
-                    default:
-                        climbVel = new Vector2(0, 0.9f);        // upwards velocity to counteract gravity
-                        break;
-                }
-
-                climbVel.x = input.x;
-
-                foreach (BodyChunk bc in self.bodyChunks)
-                    bc.vel = climbVel;
-
-                _climbingModule.PlayAnimation(input.x, input.y);
+                HardhatAbstract ahh = new HardhatAbstract(self.abstractPhysicalObject.world,
+                    self.abstractPhysicalObject.pos, self.abstractPhysicalObject.world.game.GetNewID());
+                ahh.RealizeInRoom();
             }
+            
+            ClimbingModule cm = GetClimbingModule(self);
+            HatModule hm = GetHatModule(self);
+            
+            if (cm.afterClimbingCounter > 0)
+                cm.afterClimbingCounter--;
+            if (hm.afterDonCounter > 0)
+                hm.afterDonCounter--;
+            
+            if (self.input[0].pckp && self.bodyMode == Player.BodyModeIndex.WallClimb)
+                cm.Climb();
+
+            hatKeyPressed = Input.GetKey(MountaineerPlugin.Instance.ConfigHatKey.Value);
+            if (!hatKeyPressed) hatKeyWasReleased = true;
+            
+            if (hatKeyPressed && hatKeyWasReleased &&
+                cm.afterClimbingCounter == 0 && hm.afterDonCounter == 0)
+            {
+                hm.ChangeHat(eu);
+                hatKeyWasReleased = false;
+            }
+
         }
-        
+
         private static void Player_TerrainImpact(On.Player.orig_TerrainImpact orig, Player self, int chunk,
             IntVector2 direction, float speed, bool firstContact)
         {
-            Debug.LogWarning(speed);
             // new collision speed thresholds
             if (speed > vanillaNonStunSpeed && speed < fatalSpeed)
                 speed = speed < stunSpeed ? vanillaNonStunSpeed : vanillaNonFatalSpeed;
@@ -100,12 +103,42 @@ namespace TheMountaineer
 
         #endregion Hooks
 
+        
+        private ClimbingModule GetClimbingModule(Player player)
+        {
+            foreach (ClimbingModule cm in _climbingModules)
+                if (cm.player == player)
+                    return cm;
 
-        private ClimbingModule _climbingModule;
+            ClimbingModule c = new ClimbingModule(player);
+            _climbingModules.Add(c);
+            return c;
+        }
+
+        private HatModule GetHatModule(Player player)
+        {
+            foreach (HatModule hm in _hatModules)
+                if (hm.player == player)
+                    return hm;
+
+            HatModule h = new HatModule(player);
+            _hatModules.Add(h);
+            return h;
+        }
+        
+
+        private readonly List<ClimbingModule> _climbingModules;
+        private readonly List<HatModule> _hatModules;
+
+        private bool hatKeyPressed;
+        private bool hatKeyWasReleased;
+
         private const float fatalSpeed = 100f;
         private const float vanillaNonFatalSpeed = 59f;
         private const float stunSpeed = 60f;
         private const float vanillaNonStunSpeed = 34f;
+
+        
 
     }
 }
