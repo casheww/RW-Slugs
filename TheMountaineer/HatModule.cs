@@ -35,30 +35,30 @@ namespace TheMountaineer
 
         private Hardhat DoffHat()
         {
-            Hardhat fromHead = _hatSlot;
+            Hardhat fromHead = HatSlot;
             if (fromHead != null)
             {
-                Debug.LogWarning($"{fromHead.abstractPhysicalObject.ID} off");
+                Debug.Log($"{fromHead.abstractPhysicalObject.ID} off");
                 fromHead.wearer = null;
             }
-            else Debug.LogWarning("nothing to doff");
+            else Debug.Log("nothing to doff");
             
-            _hatSlot = null;
+            HatSlot = null;
             return fromHead;
         }
         
         private void DonHat(int grasp, Hardhat hat)
         {
             player.ReleaseObject(grasp, false);
-            Debug.LogWarning($"{hat.abstractPhysicalObject.ID} to head");
+            Debug.Log($"{hat.abstractPhysicalObject.ID} to head");
             hat.wearer = player;
-            _hatSlot = hat;
+            HatSlot = hat;
         }
         
 
         public readonly Player player;
         public int afterDonCounter;
-        private Hardhat _hatSlot;
+        public Hardhat HatSlot { get; private set; }
 
     }
 }

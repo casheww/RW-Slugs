@@ -49,11 +49,13 @@ namespace TheMountaineer
         {
             On.Player.Update += Player_Update;
             On.Player.TerrainImpact += Player_TerrainImpact;
+            On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
         }
         protected override void Disable()
         {
             On.Player.Update -= Player_Update;
             On.Player.TerrainImpact -= Player_TerrainImpact;
+            On.PlayerGraphics.DrawSprites -= PlayerGraphics_DrawSprites;
         }
         
         private void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
@@ -101,6 +103,17 @@ namespace TheMountaineer
             orig(self, chunk, direction, speed, firstContact);
         }
 
+        private void PlayerGraphics_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self,
+            RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+        {
+            orig(self, sLeaser, rCam, timeStacker, camPos);
+            
+            Hardhat hat = GetHatModule(self.owner as Player).HatSlot;
+            if (hat == null) return;
+            hat.anchorPos = sLeaser.sprites[3].GetPosition();
+            hat.anchorRotation = sLeaser.sprites[3].rotation;
+        }
+        
         #endregion Hooks
 
         
