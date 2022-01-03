@@ -8,7 +8,7 @@ namespace TheMountaineer.Equipment
         public HardhatAbstract(World world, WorldCoordinate pos, EntityID id) :
             base(world, HardhatFisob.instance.Type, null, pos, id)
         {
-            charge = 1f - Random.value * 0.2f;
+            charge = 1f - Random.value * 0.1f;
         }
 
         public override void Realize()

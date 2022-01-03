@@ -2,7 +2,7 @@
 
 namespace TheMountaineer.Equipment
 {
-    public class Hardhat : PlayerCarryableItem, IDrawable
+    public partial class Hardhat : PlayerCarryableItem, IDrawable
     {
         public Hardhat(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject)
         {
@@ -15,25 +15,29 @@ namespace TheMountaineer.Equipment
             collisionLayer = 2;
             waterFriction = 0.98f;
             buoyancy = 0.6f;
+
+            _lamp = new Lamp(firstChunk.pos, Color.yellow, this);
         }
 
         public override void PlaceInRoom(Room placeRoom)
         {
             base.PlaceInRoom(placeRoom);
             firstChunk.HardSetPosition(placeRoom.MiddleOfTile(abstractPhysicalObject.pos));
+            room.AddObject(_lamp);
         }
 
         public override void Update(bool eu)
         {
             base.Update(eu);
 
+            UpdateLamp();
+            
             if (wearer == null) return;
             Forbid();
 
             if (TryChangeRoom())
                 return;
             
-            UpdateLamp();
             UpdatePosAndRotation();
         }
 
@@ -43,27 +47,26 @@ namespace TheMountaineer.Equipment
 
             RemoveFromRoom();
             wearer.room.AddObject(this);
+            _lamp.RemoveFromRoom();
+            wearer.room.AddObject(_lamp);
             return true;
         }
 
         private void UpdateLamp()
         {
+            if (AbstractHat.charge > 0) _lamp.stayAlive = true;
+
+            // TODO : discharge -> turn off
             float darkness = room.Darkness(Vector2.zero);
             _activeDischarge = Mathf.Clamp01(maxDischarge * Mathf.Clamp01(darkness - activationDarkness));
             AbstractHat.charge -= _activeDischarge;
-
-            lampBrightness = _activeDischarge;
-            if (AbstractHat.charge < lampFlickerThreshold)
-            {
-                // TODO : flicker
-            }
         }
 
         private void UpdatePosAndRotation()
         {
             Vector2 wearerBodyOrientation = (wearer.bodyChunks[0].pos - wearer.bodyChunks[1].pos).normalized;
             _rotation = RWCustom.Custom.VecToDeg(wearerBodyOrientation);
-            firstChunk.pos = wearer.bodyChunks[1].pos + wearerBodyOrientation * headSeparation;
+            firstChunk.pos = wearer.bodyChunks[1].pos + wearerBodyOrientation * separationFromHead;
         }
 
         
@@ -72,27 +75,22 @@ namespace TheMountaineer.Equipment
         public Player wearer;
         public Vector2 anchorPos;
         public float anchorRotation;
-        private const float headSeparation = 32f;
-        public static readonly Color mainColor = new Color(0.8f, 0.7f, 0.4f);
+        private const float separationFromHead = 9f;
+        public static readonly Color mainColor = new Color(0.9f, 0.8f, 0.4f);
         private float _rotation;
         
         private float _activeDischarge;
-        private const float maxDischarge = 0.005f;
+        private const float maxDischarge = 0.00005f;
         private const float activationDarkness = 0.7f;
 
-        private float lampBrightness;
-        private const float lampFlickerThreshold = 0.2f;
+        private Lamp _lamp;
 
 
         #region Drawable
         
         public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
-            sLeaser.sprites = new[]
-            {
-                new FSprite("Menu_Symbol_Arrow"),
-                //new CustomFSprite("Futile_White")
-            };
+            sLeaser.sprites = new[] {new FSprite("Menu_Symbol_Arrow")};
             AddToContainer(sLeaser, rCam, null);
         }
 
@@ -100,25 +98,26 @@ namespace TheMountaineer.Equipment
         {
             FSprite s = sLeaser.sprites[0];
 
-            Vector2 pos;
-            float rot;
             if (wearer != null)
             {
-                rot = anchorRotation;
-                pos = anchorPos + RWCustom.Custom.DegToVec(rot) * headSeparation;
+                DrawRotation = anchorRotation;
+                SpritePos = anchorPos + camPos + RWCustom.Custom.DegToVec(anchorRotation) * separationFromHead;
             }
             else
             {
-                pos = Vector2.Lerp(firstChunk.lastPos, firstChunk.pos, timeStacker) - camPos;
-                rot = _rotation;
+                DrawRotation = _rotation;
+                SpritePos = Vector2.Lerp(firstChunk.lastPos, firstChunk.pos, timeStacker);
             }
 
-            s.SetPosition(pos);
-            s.rotation = rot;
+            s.SetPosition(SpritePos - camPos);
+            s.rotation = DrawRotation;
             
             if (slatedForDeletetion || room != rCam.room)
                 sLeaser.CleanSpritesAndRemove();
         }
+
+        public Vector2 SpritePos { get; private set; }
+        public float DrawRotation { get; private set; }
 
         public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
@@ -138,6 +137,5 @@ namespace TheMountaineer.Equipment
         }
         
         #endregion Drawable
-
     }
 }

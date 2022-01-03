@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClimbingModule.cs" />
+    <Compile Include="Equipment\Hardhat.Lamp.cs" />
     <Compile Include="Equipment\HardhatProperties.cs" />
     <Compile Include="Fisobs\EntitySaveData.cs" />
     <Compile Include="Fisobs\Fisob.cs" />
