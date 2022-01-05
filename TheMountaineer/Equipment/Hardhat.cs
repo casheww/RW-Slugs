@@ -16,7 +16,7 @@ namespace TheMountaineer.Equipment
             waterFriction = 0.98f;
             buoyancy = 0.6f;
 
-            _lamp = new Lamp(firstChunk.pos, new Color(1f, 0.9f, 0.75f), this);
+            _lamp = new Lamp(firstChunk.pos, new Color(1f, 0.9f, 0.65f), this);
         }
 
         public override void PlaceInRoom(Room placeRoom)
@@ -59,12 +59,7 @@ namespace TheMountaineer.Equipment
 
         private void UpdateLamp()
         {
-            if (AbstractHat.charge > 0) _lamp.stayAlive = true;
-
-            // TODO : discharge -> turn off
-            float darkness = room.Darkness(Vector2.zero);
-            _activeDischarge = Mathf.Clamp01(maxDischarge * Mathf.Clamp01(darkness - activationDarkness));
-            AbstractHat.charge -= _activeDischarge;
+            AbstractHat.UpdateCharge(room.Darkness(Vector2.zero));
         }
 
         private void UpdatePosAndRotation()
@@ -78,17 +73,16 @@ namespace TheMountaineer.Equipment
         public HardhatAbstract AbstractHat => abstractPhysicalObject as HardhatAbstract;
 
         public Player wearer;
+        private Lamp _lamp;
+
         public Vector2 anchorPos;
         public float anchorRotation;
+        private float _rotation;
         private const float separationFromHead = 9f;
         public static readonly Color mainColor = new Color(0.9f, 0.8f, 0.4f);
-        private float _rotation;
         
-        private float _activeDischarge;
-        private const float maxDischarge = 0.00005f;
-        private const float activationDarkness = 0.7f;
-
-        private Lamp _lamp;
+        public Vector2 SpritePos { get; private set; }
+        public float SpriteRotation { get; private set; }
 
 
         #region Drawable
@@ -120,9 +114,6 @@ namespace TheMountaineer.Equipment
             if (slatedForDeletetion || room != rCam.room)
                 sLeaser.CleanSpritesAndRemove();
         }
-
-        public Vector2 SpritePos { get; private set; }
-        public float SpriteRotation { get; private set; }
 
         public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
