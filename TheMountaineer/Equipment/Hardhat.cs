@@ -16,7 +16,7 @@ namespace TheMountaineer.Equipment
             waterFriction = 0.98f;
             buoyancy = 0.6f;
 
-            _lamp = new Lamp(firstChunk.pos, Color.yellow, this);
+            _lamp = new Lamp(firstChunk.pos, new Color(1f, 0.9f, 0.75f), this);
         }
 
         public override void PlaceInRoom(Room placeRoom)
@@ -43,13 +43,18 @@ namespace TheMountaineer.Equipment
 
         private bool TryChangeRoom()
         {
-            if (wearer.room == room) return false;
+            if (wearer.room == room || wearer.room == null) return false;
 
             RemoveFromRoom();
             wearer.room.AddObject(this);
+            ChangeLampRoom();
+            return true;
+        }
+
+        private void ChangeLampRoom()
+        {
             _lamp.RemoveFromRoom();
             wearer.room.AddObject(_lamp);
-            return true;
         }
 
         private void UpdateLamp()
@@ -100,24 +105,24 @@ namespace TheMountaineer.Equipment
 
             if (wearer != null)
             {
-                DrawRotation = anchorRotation;
+                SpriteRotation = anchorRotation;
                 SpritePos = anchorPos + camPos + RWCustom.Custom.DegToVec(anchorRotation) * separationFromHead;
             }
             else
             {
-                DrawRotation = _rotation;
+                SpriteRotation = _rotation;
                 SpritePos = Vector2.Lerp(firstChunk.lastPos, firstChunk.pos, timeStacker);
             }
 
             s.SetPosition(SpritePos - camPos);
-            s.rotation = DrawRotation;
+            s.rotation = SpriteRotation;
             
             if (slatedForDeletetion || room != rCam.room)
                 sLeaser.CleanSpritesAndRemove();
         }
 
         public Vector2 SpritePos { get; private set; }
-        public float DrawRotation { get; private set; }
+        public float SpriteRotation { get; private set; }
 
         public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
@@ -137,5 +142,6 @@ namespace TheMountaineer.Equipment
         }
         
         #endregion Drawable
+        
     }
 }
